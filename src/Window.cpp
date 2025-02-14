@@ -34,7 +34,7 @@ bool Window::init() {
 void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
-   // Get the pointer to the Camera object (or other object holding the projection matrix)
+   // Get the pointer to the Camera object
     Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
     if (camera) {
         // Recalculate the projection matrix with the new aspect ratio

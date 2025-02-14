@@ -1,4 +1,5 @@
-#include <glad/glad.h>
+//#include <glad/glad.h>
+#include "GLCommon.h"
 #include <GLFW/glfw3.h>
 
 // GLM for matrices
@@ -10,7 +11,7 @@
 #include <iostream>
 // Game objects
 
-#include "Cube.h"
+//#include "Cube.h"
 #include "Shader.h"
 #include "Window.h"
 #include "Renderer.h"

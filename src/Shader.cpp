@@ -1,5 +1,7 @@
 #include <glm/glm.hpp>
-#include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
+//#include <glad/glad.h>
+#include "GLCommon.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -42,20 +44,32 @@ void Shader::use() {
     glUseProgram(ID);
 }
 
+/* cache to query uniform location on gpu only once */
+GLint Shader::getUniformLocation(const std::string& name) {
+    if (uniformLocationCache.find(name) != uniformLocationCache.end())
+        return uniformLocationCache[name];
+    GLint location = glGetUniformLocation(ID, name.c_str());
+    if (location == -1)
+        std::cerr << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
+    uniformLocationCache[name] = location;
+    return location;
+}
+
 void Shader::setUniform(const std::string& name, float value) {
-    glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+    glUniform1f(getUniformLocation(name), value);
 }
 
 void Shader::setUniform(const std::string& name, int value) {
-    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    glUniform1i(getUniformLocation(name), value);
 }
 
 void Shader::setUniform(const std::string& name, const glm::vec3& value) {
-    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+    glUniform3fv(getUniformLocation(name), 1, &value[0]);
 }
 
-void Shader::setUniform(const std::string& name, const float* matrix) {
-    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, matrix);
+void Shader::setUniform(const std::string& name, const glm::mat4& matrix) {
+    glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE,
+                       glm::value_ptr(matrix));
 }
 
 std::string Shader::readFile(const std::string& filePath) {

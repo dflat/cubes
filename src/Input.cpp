@@ -1,10 +1,9 @@
 #include "Input.h"
 
 glm::quat Input::rotation(1.0f, 0.0f, 0.0f, 0.0f); // Identity quaternion
-
-glm::vec2 lastMousePos;
-glm::vec3 axis(1.0f, 0.0f, 0.0f);
-bool rotating = false;
+glm::vec2 Input::lastMousePos;
+glm::vec3 Input::axis(1.0f, 0.0f, 0.0f);
+bool Input::rotating = false;
 
 void Input::setupCallbacks(GLFWwindow* window) {
         glfwSetKeyCallback(window, Input::keyCallback);

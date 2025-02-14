@@ -28,8 +28,8 @@ void Camera::update(const float t) {
     float PI = 3.14159f;
     float freq = 1.0/5;
     float phase = (2*PI*t*freq);
-    float c = glm::cos(phase);
+    float c = cos(phase);
     float s = sin(phase);
-    glm::vec3 base(0,0,5);
-    position = base + glm::vec3(c,s,0);
+    glm::vec3 base(0,0,10);
+    position = base + 0.1f*glm::vec3(c,s,0);
 }

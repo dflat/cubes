@@ -16,12 +16,15 @@ target_include_directories(glad PUBLIC "include")
 
 # Add a library target for Cube (including Shader)
 add_library(CubeLib
-    src/Cube.cpp
+    #src/Cube.cpp
     src/Shader.cpp
     src/Window.cpp
     src/Renderer.cpp
     src/Camera.cpp
     src/Input.cpp
+    src/Entity.cpp
+    src/Mesh.cpp
+    src/Light.cpp
     src/Game.cpp
 )
 target_include_directories(CubeLib PUBLIC "include")

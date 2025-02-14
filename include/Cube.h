@@ -1,20 +1,18 @@
-#ifndef CUBE_HPP
-#define CUBE_HPP
+#ifndef CUBE_H
+#define CUBE_H
 
-#include "Shader.h"
+#include "Entity.h"
+#include <glm/glm.hpp>
 
-class Cube {
-private:
-    GLuint VAO, VBO, EBO;
+class Mesh; // Forward declaration if not already included in Entity.h
 
+// The Cube class is a specialization of Entity. For now, it simply calls the Entity constructor.
+class Cube : public Entity {
 public:
-    static float vertices[9*4*6];
-    static unsigned int indices[3*2*6];
-
-    Cube();
-    ~Cube();
-    void draw(Shader& shader);
-
+    // Constructor: takes a pointer to the shared Mesh and an optional initial model matrix.
+    Cube(Mesh* mesh, const glm::mat4& model = glm::mat4(1.0f));
+    Cube(Mesh* mesh, const glm::vec3& position);
 };
 
-#endif
+#endif // CUBE_H
+

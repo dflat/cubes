@@ -1,5 +1,6 @@
 #include "Renderer.h"
-#include <glad/glad.h>
+#include "GLCommon.h"
+//#include <glad/glad.h>
 
 void Renderer::init() {
     glEnable(GL_DEPTH_TEST);
