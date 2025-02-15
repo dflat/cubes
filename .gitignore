@@ -1,3 +1,4 @@
 build/*
 assets/*
 .DS_Store
+.vscode
