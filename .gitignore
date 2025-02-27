@@ -1,4 +1,5 @@
 build/*
 assets/*
+scratch/*
 .DS_Store
 .vscode
