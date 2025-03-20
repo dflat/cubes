@@ -3,3 +3,4 @@ assets/*
 scratch/*
 .DS_Store
 .vscode
+.cache
