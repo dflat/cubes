@@ -3,9 +3,28 @@ project(CubeProject VERSION 0.1.0
                    DESCRIPTION "3D Cube Rendering Project"
                    LANGUAGES CXX C)
 
+# Set default build type to RelWithDebInfo if not specified
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build: Debug Release RelWithDebInfo MinSizeRel" FORCE)
+endif()
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Set debug compiler flags based on compiler
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    if(MSVC)
+        add_compile_options(/Zi)  # Debug info for MSVC
+        add_link_options(/DEBUG)  # Generate debug information
+    else()
+        add_compile_options(-g)   # Debug info for GCC/Clang
+    endif()
+    
+    # Define DEBUG macro when in Debug mode
+    add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
+endif()
 
 # Silence OpenGL deprecation warnings on macOS
 if(APPLE)
@@ -135,7 +154,7 @@ add_library(CubeLib
 )
 
 # Apply warning settings
-#set_project_warnings(CubeLib)
+set_project_warnings(CubeLib)
 
 # Set include directories
 target_include_directories(CubeLib 
@@ -158,6 +177,11 @@ target_link_libraries(CubeLib
 add_executable(game src/main.cpp)
 target_link_libraries(game PRIVATE CubeLib)
 
+# Make executable output to bin/Debug or bin/Release directory based on config
+set_target_properties(game PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}"
+)
+
 # ------------------------------------------------------------------------------
 # Installation rules
 # ------------------------------------------------------------------------------
@@ -178,3 +202,24 @@ add_custom_command(TARGET game POST_BUILD
     ${CMAKE_CURRENT_SOURCE_DIR}/assets $<TARGET_FILE_DIR:game>/assets
     COMMENT "Copying assets to build directory"
 )
+
+# Create a helper target for running the executable with debugger
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        add_custom_target(debug
+            COMMAND ${CMAKE_COMMAND} -E env ASAN_OPTIONS=detect_leaks=1 
+                    lldb $<TARGET_FILE:game>
+            DEPENDS game
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Running with lldb debugger"
+        )
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        add_custom_target(debug
+            COMMAND ${CMAKE_COMMAND} -E env 
+                    gdb $<TARGET_FILE:game>
+            DEPENDS game
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Running with gdb debugger"
+        )
+    endif()
+endif()
